@@ -54,7 +54,7 @@ def process_file(file_path):
             
             # Create embeddings
             embedding_model = HuggingFaceEmbeddings(
-                model_name="sentence-transformers/all-MiniLM-L6-v2"
+                model_name="TinyLlama/TinyLlama-1.1B-Chat-v1.0"
             )
             
             # Create vector store
@@ -76,13 +76,13 @@ if uploaded_file and st.session_state.vector_store is None:
 
 @st.cache_resource(show_spinner=False)
 def load_model():
-    model_name = "HuggingFaceTB/SmolLM-3B"
+    model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    device = torch.device('mps')
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForCausalLM.from_pretrained(
         model_name,
         torch_dtype=torch.float16,
-        device_map="auto"
-    )
+    ).to(device)
     return tokenizer, model
 
 def generate_answer(question, top_k=3, temperature=0.7, max_tokens=200):
@@ -107,7 +107,7 @@ def generate_answer(question, top_k=3, temperature=0.7, max_tokens=200):
 
         tokenizer, model = load_model()
         
-        inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+        inputs = tokenizer(prompt, return_tensors="pt").to(model.device).to(torch.device('mps'))
         outputs = model.generate(
             **inputs,
             max_new_tokens=max_tokens,
