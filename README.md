@@ -32,7 +32,7 @@ A fully self-contained Retrieval-Augmented Generation (RAG) chatbot built with L
 ### 1. Clone and Setup
 
 ```bash
-git clone https://github.com/pathupally/langhcain-rag-chatbot
+https://github.com/pathupally/doc-qa
 cd langhcain-rag-chatbot
 
 python3 -m venv venv
